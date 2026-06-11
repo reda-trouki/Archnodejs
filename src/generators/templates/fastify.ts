@@ -7,7 +7,7 @@ export const generateFastifyTemplate = async (projectPath: string): Promise<void
     `import Fastify, { FastifyInstance } from 'fastify';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
-import { AppError } from '../../shared/errors/AppError';
+import { AppError } from '@/shared/errors/AppError';
 
 export const createApp = async (): Promise<FastifyInstance> => {
   const fastify = Fastify({

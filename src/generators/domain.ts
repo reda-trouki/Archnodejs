@@ -4,37 +4,21 @@ import { toPascalCase, toKebabCase, toCamelCase } from '../utils/file';
 
 export const generateDomain = async (name: string, basePath: string): Promise<void> => {
   const pascal = toPascalCase(name);
-  const kebab = toKebabCase(name);
-  const camel = toCamelCase(name);
+  const kebab  = toKebabCase(name);
+  const camel  = toCamelCase(name);
   const domainPath = path.join(basePath, 'src', 'domain', kebab);
 
   // Entity
   await writeFile(
     path.join(domainPath, 'entities', `${pascal}.ts`),
-    `export class ${pascal} {
-  private readonly _id: string;
-  private _createdAt: Date;
-  private _updatedAt: Date;
+    `import { BaseEntity } from '@/domain/shared/BaseEntity';
 
-  constructor(id: string) {
-    this._id = id;
-    this._createdAt = new Date();
-    this._updatedAt = new Date();
+export class ${pascal} extends BaseEntity {
+  constructor(id?: string) {
+    super(id);
   }
 
-  get id(): string {
-    return this._id;
-  }
-
-  get createdAt(): Date {
-    return this._createdAt;
-  }
-
-  get updatedAt(): Date {
-    return this._updatedAt;
-  }
-
-  // Add domain logic and invariants here
+  // Add domain properties and invariants here
 }
 `
   );
@@ -42,7 +26,7 @@ export const generateDomain = async (name: string, basePath: string): Promise<vo
   // Repository Interface
   await writeFile(
     path.join(domainPath, 'repositories', `I${pascal}Repository.ts`),
-    `import { ${pascal} } from '../entities/${pascal}';
+    `import { ${pascal} } from '@/domain/${kebab}/entities/${pascal}';
 
 export interface I${pascal}Repository {
   findById(id: string): Promise<${pascal} | null>;
@@ -67,17 +51,11 @@ export interface I${pascal}Repository {
     this._value = value;
   }
 
-  get value(): string {
-    return this._value;
-  }
+  get value(): string { return this._value; }
 
-  equals(other: ${pascal}Id): boolean {
-    return this._value === other._value;
-  }
+  equals(other: ${pascal}Id): boolean { return this._value === other._value; }
 
-  toString(): string {
-    return this._value;
-  }
+  toString(): string { return this._value; }
 }
 `
   );
@@ -85,21 +63,20 @@ export interface I${pascal}Repository {
   // Domain Service
   await writeFile(
     path.join(domainPath, 'services', `${pascal}DomainService.ts`),
-    `import { ${pascal} } from '../entities/${pascal}';
-import { I${pascal}Repository } from '../repositories/I${pascal}Repository';
+    `import { ${pascal} } from '@/domain/${kebab}/entities/${pascal}';
+import { I${pascal}Repository } from '@/domain/${kebab}/repositories/I${pascal}Repository';
 
 export class ${pascal}DomainService {
   constructor(
     private readonly ${camel}Repository: I${pascal}Repository
   ) {}
 
-  // Add domain-specific business rules and logic here
-  // Domain services contain logic that doesn't naturally fit within an entity
-
   async exists(id: string): Promise<boolean> {
-    const ${camel} = await this.${camel}Repository.findById(id);
-    return ${camel} !== null;
+    const entity = await this.${camel}Repository.findById(id);
+    return entity !== null;
   }
+
+  // Add domain-specific business rules here
 }
 `
   );
@@ -110,9 +87,7 @@ export class ${pascal}DomainService {
     `export class ${pascal}CreatedEvent {
   public readonly occurredAt: Date;
 
-  constructor(
-    public readonly ${camel}Id: string
-  ) {
+  constructor(public readonly ${camel}Id: string) {
     this.occurredAt = new Date();
   }
 

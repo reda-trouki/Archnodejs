@@ -1,78 +1,34 @@
-import path from "path";
-import { writeFile } from "../utils/file";
-import { toPascalCase, toKebabCase, toCamelCase } from "../utils/file";
+import path from 'path';
+import { writeFile } from '../utils/file';
+import { toPascalCase, toKebabCase, toCamelCase } from '../utils/file';
 
-// Strip common verb prefixes to infer the domain name
-// e.g. CreateUser -> User, ListUserOrders -> UserOrders, SendPasswordResetEmail -> PasswordResetEmail
 const inferDomainName = (useCaseName: string): string => {
   const VERB_PREFIXES = [
-    "Create",
-    "Update",
-    "Delete",
-    "Get",
-    "Find",
-    "List",
-    "Remove",
-    "Add",
-    "Fetch",
-    "Search",
-    "Count",
-    "Bulk",
-    "Import",
-    "Export",
-    "Send",
-    "Process",
-    "Handle",
-    "Assign",
-    "Approve",
-    "Reject",
-    "Archive",
-    "Restore",
-    "Publish",
-    "Unpublish",
-    "Enable",
-    "Disable",
-    "Reset",
+    'Create', 'Update', 'Delete', 'Get', 'Find', 'List', 'Remove', 'Add',
+    'Fetch', 'Search', 'Count', 'Bulk', 'Import', 'Export', 'Send',
+    'Process', 'Handle', 'Assign', 'Approve', 'Reject', 'Archive',
+    'Restore', 'Publish', 'Unpublish', 'Enable', 'Disable', 'Reset',
   ];
-
   for (const verb of VERB_PREFIXES) {
     if (useCaseName.startsWith(verb) && useCaseName.length > verb.length) {
       return useCaseName.slice(verb.length);
     }
   }
-
-  // No verb prefix found — use the name as-is (e.g. plain "User")
   return useCaseName;
 };
 
-export const generateUseCase = async (
-  name: string,
-  basePath: string
-): Promise<void> => {
-  const pascal = toPascalCase(name);
-
+export const generateUseCase = async (name: string, basePath: string): Promise<void> => {
+  const pascal      = toPascalCase(name);
   const domainGuess = inferDomainName(pascal);
   const domainCamel = toCamelCase(domainGuess);
   const domainKebab = toKebabCase(domainGuess);
 
-  const useCasePath = path.join(
-    basePath,
-    "src",
-    "application",
-    domainKebab,
-    "use-cases"
-  );
+  const dtoPath     = path.join(basePath, 'src', 'application', domainKebab, 'dto');
+  const useCasePath = path.join(basePath, 'src', 'application', domainKebab, 'use-cases');
 
   // DTO
   await writeFile(
-    path.join(
-      basePath,
-      "src",
-      "application",
-      domainKebab,
-      "dto",
-      `${pascal}Dto.ts`
-    ),
+    path.join(dtoPath, `${pascal}Dto.ts`),
     `export interface ${pascal}Dto {
   // Define input properties for ${pascal}
   // Example: id?: string;
@@ -85,14 +41,25 @@ export interface ${pascal}ResponseDto {
 `
   );
 
-  // Use Case
+  // Use Case Interface — defines the contract
+  await writeFile(
+    path.join(useCasePath, `I${pascal}UseCase.ts`),
+    `import { ${pascal}Dto, ${pascal}ResponseDto } from '@/application/${domainKebab}/dto/${pascal}Dto';
+
+export interface I${pascal}UseCase {
+  execute(dto: ${pascal}Dto): Promise<${pascal}ResponseDto>;
+}
+`
+  );
+
+  // Use Case Implementation — implements the interface
   await writeFile(
     path.join(useCasePath, `${pascal}UseCase.ts`),
-    `import { ${pascal}Dto, ${pascal}ResponseDto } from '../dto/${pascal}Dto';
-import { I${domainGuess}Repository } from '../../domain/${domainKebab}/repositories/I${domainGuess}Repository';
-import { I${pascal}UseCase } from './I${pascal}UseCase'
+    `import { ${pascal}Dto, ${pascal}ResponseDto } from '@/application/${domainKebab}/dto/${pascal}Dto';
+import { I${pascal}UseCase } from '@/application/${domainKebab}/use-cases/I${pascal}UseCase';
+import { I${domainGuess}Repository } from '@/domain/${domainKebab}/repositories/I${domainGuess}Repository';
 
-export class ${pascal}UseCase implements I${pascal}UseCase  {
+export class ${pascal}UseCase implements I${pascal}UseCase {
   constructor(
     private readonly ${domainCamel}Repository: I${domainGuess}Repository
   ) {}
@@ -106,17 +73,6 @@ export class ${pascal}UseCase implements I${pascal}UseCase  {
 
     throw new Error('${pascal}UseCase.execute() not implemented');
   }
-}
-`
-  );
-
-  // Use Case Interface (for DIP compliance)
-  await writeFile(
-    path.join(useCasePath, `I${pascal}UseCase.ts`),
-    `import { ${pascal}Dto, ${pascal}ResponseDto } from '../dto/${pascal}Dto';
-
-export interface I${pascal}UseCase {
-  execute(dto: ${pascal}Dto): Promise<${pascal}ResponseDto>;
 }
 `
   );

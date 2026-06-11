@@ -9,7 +9,7 @@ export const generateTypeOrmIntegration = async (projectPath: string, entityName
   await writeFile(
     path.join(projectPath, 'src', 'infrastructure', 'database', 'typeorm.datasource.ts'),
     `import { DataSource } from 'typeorm';
-import { ${pascal}Schema } from '../schemas/${pascal}Schema';
+import { ${pascal}Schema } from '@/infrastructure/schemas/${pascal}Schema';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -53,9 +53,9 @@ export class ${pascal}Schema {
   await writeFile(
     path.join(projectPath, 'src', 'infrastructure', 'repositories', `TypeOrm${pascal}Repository.ts`),
     `import { DataSource, Repository } from 'typeorm';
-import { ${pascal} } from '../../domain/${lower}/entities/${pascal}';
-import { I${pascal}Repository } from '../../domain/${lower}/repositories/I${pascal}Repository';
-import { ${pascal}Schema } from '../schemas/${pascal}Schema';
+import { ${pascal} } from '@/domain/${lower}/entities/${pascal}';
+import { I${pascal}Repository } from '@/domain/${lower}/repositories/I${pascal}Repository';
+import { ${pascal}Schema } from '@/infrastructure/schemas/${pascal}Schema';
 
 export class TypeOrm${pascal}Repository implements I${pascal}Repository {
   private readonly repo: Repository<${pascal}Schema>;

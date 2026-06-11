@@ -8,7 +8,7 @@ export const generateExpressTemplate = async (projectPath: string): Promise<void
     `import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import { AppError } from '../../shared/errors/AppError';
+import { AppError } from '@/shared/errors/AppError';
 
 export const createApp = (): Application => {
   const app = express();
@@ -54,7 +54,7 @@ export const createApp = (): Application => {
   await writeFile(
     path.join(projectPath, 'src', 'presentation', 'http', 'middlewares', 'validate.middleware.ts'),
     `import { Request, Response, NextFunction } from 'express';
-import { ValidationError } from '../../../shared/errors/AppError';
+import { ValidationError } from '@/shared/errors/AppError';
 
 type Schema = { parse: (data: unknown) => unknown };
 
@@ -82,7 +82,7 @@ export const validate = (
   await writeFile(
     path.join(projectPath, 'src', 'presentation', 'http', 'middlewares', 'auth.middleware.ts'),
     `import { Request, Response, NextFunction } from 'express';
-import { UnauthorizedError } from '../../../shared/errors/AppError';
+import { UnauthorizedError } from '@/shared/errors/AppError';
 
 export const authMiddleware = (req: Request, _res: Response, next: NextFunction): void => {
   const token = req.headers.authorization?.replace('Bearer ', '');

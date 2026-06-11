@@ -12,12 +12,12 @@ export const generateTsyringeContainer = async (projectPath: string, entityName:
     `import 'reflect-metadata';
 import { container, injectable, inject } from 'tsyringe';
 
-import { I${pascal}Repository } from '../domain/${kebab}/repositories/I${pascal}Repository';
-import { ${pascal}Repository } from '../infrastructure/repositories/${pascal}Repository';
-import { Create${pascal}UseCase } from '../application/${kebab}/use-cases/Create${pascal}UseCase';
-import { Update${pascal}UseCase } from '../application/${kebab}/use-cases/Update${pascal}UseCase';
-import { Delete${pascal}UseCase } from '../application/${kebab}/use-cases/Delete${pascal}UseCase';
-import { ${pascal}Controller } from '../presentation/http/controllers/${pascal}Controller';
+import { I${pascal}Repository } from '@/domain/${kebab}/repositories/I${pascal}Repository';
+import { ${pascal}Repository } from '@/infrastructure/repositories/${pascal}Repository';
+import { Create${pascal}UseCase } from '@/application/${kebab}/use-cases/Create${pascal}UseCase';
+import { Update${pascal}UseCase } from '@/application/${kebab}/use-cases/Update${pascal}UseCase';
+import { Delete${pascal}UseCase } from '@/application/${kebab}/use-cases/Delete${pascal}UseCase';
+import { ${pascal}Controller } from '@/presentation/http/controllers/${pascal}Controller';
 
 // Register the concrete implementation against the interface token
 container.register<I${pascal}Repository>('${pascal}Repository', {

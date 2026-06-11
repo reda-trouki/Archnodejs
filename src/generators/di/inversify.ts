@@ -37,18 +37,18 @@ import { Container } from 'inversify';
 import { TYPES } from './types';
 
 // Domain
-import { I${pascal}Repository } from '../domain/${kebab}/repositories/I${pascal}Repository';
+import { I${pascal}Repository } from '@/domain/${kebab}/repositories/I${pascal}Repository';
 
 // Infrastructure
-import { ${pascal}Repository } from '../infrastructure/repositories/${pascal}Repository';
+import { ${pascal}Repository } from '@/infrastructure/repositories/${pascal}Repository';
 
 // Use Cases
-import { Create${pascal}UseCase } from '../application/${kebab}/use-cases/Create${pascal}UseCase';
-import { Update${pascal}UseCase } from '../application/${kebab}/use-cases/Update${pascal}UseCase';
-import { Delete${pascal}UseCase } from '../application/${kebab}/use-cases/Delete${pascal}UseCase';
+import { Create${pascal}UseCase } from '@/application/${kebab}/use-cases/Create${pascal}UseCase';
+import { Update${pascal}UseCase } from '@/application/${kebab}/use-cases/Update${pascal}UseCase';
+import { Delete${pascal}UseCase } from '@/application/${kebab}/use-cases/Delete${pascal}UseCase';
 
 // Presentation
-import { ${pascal}Controller } from '../presentation/http/controllers/${pascal}Controller';
+import { ${pascal}Controller } from '@/presentation/http/controllers/${pascal}Controller';
 
 const container = new Container({ defaultScope: 'Singleton' });
 

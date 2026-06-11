@@ -53,9 +53,9 @@ if (process.env.NODE_ENV !== 'production') {
   // Prisma-backed repository implementation
   await writeFile(
     path.join(projectPath, 'src', 'infrastructure', 'repositories', `Prisma${pascal}Repository.ts`),
-    `import { prisma } from '../database/prisma.client';
-import { ${pascal} } from '../../domain/${lower}/entities/${pascal}';
-import { I${pascal}Repository } from '../../domain/${lower}/repositories/I${pascal}Repository';
+    `import { prisma } from '@/infrastructure/database/prisma.client';
+import { ${pascal} } from '@/domain/${lower}/entities/${pascal}';
+import { I${pascal}Repository } from '@/domain/${lower}/repositories/I${pascal}Repository';
 
 export class Prisma${pascal}Repository implements I${pascal}Repository {
   async findById(id: string): Promise<${pascal} | null> {

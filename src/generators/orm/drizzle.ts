@@ -44,10 +44,10 @@ export type DrizzleDB = typeof db;
   await writeFile(
     path.join(projectPath, 'src', 'infrastructure', 'repositories', `Drizzle${pascal}Repository.ts`),
     `import { eq } from 'drizzle-orm';
-import { db } from '../database/drizzle.client';
-import { ${camel}s } from '../database/schema';
-import { ${pascal} } from '../../domain/${lower}/entities/${pascal}';
-import { I${pascal}Repository } from '../../domain/${lower}/repositories/I${pascal}Repository';
+import { db } from '@/infrastructure/database/drizzle.client';
+import { ${camel}s } from '@/infrastructure/database/schema';
+import { ${pascal} } from '@/domain/${lower}/entities/${pascal}';
+import { I${pascal}Repository } from '@/domain/${lower}/repositories/I${pascal}Repository';
 
 export class Drizzle${pascal}Repository implements I${pascal}Repository {
   async findById(id: string): Promise<${pascal} | null> {

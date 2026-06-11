@@ -8,8 +8,8 @@ import { generateController } from './controller';
 
 export const generateModule = async (name: string, basePath: string): Promise<void> => {
   const pascal = toPascalCase(name);
-  const camel = toCamelCase(name);
-  const kebab = toKebabCase(name);
+  const camel  = toCamelCase(name);
+  const kebab  = toKebabCase(name);
 
   // Domain layer
   await generateDomain(name, basePath);
@@ -18,7 +18,7 @@ export const generateModule = async (name: string, basePath: string): Promise<vo
   await generateUseCase(`Create${pascal}`, basePath);
   await generateUseCase(`Update${pascal}`, basePath);
   await generateUseCase(`Delete${pascal}`, basePath);
-  await generateUseCase(`Get${pascal}`, basePath);
+  await generateUseCase(`Get${pascal}`,    basePath);
 
   // Infrastructure layer
   await generateRepository(name, basePath);
@@ -26,14 +26,14 @@ export const generateModule = async (name: string, basePath: string): Promise<vo
   // Presentation layer
   await generateController(name, basePath);
 
-  // DI Container entry
+  // DI Container wiring
   await writeFile(
     path.join(basePath, 'src', 'container', `${camel}Container.ts`),
-    `import { ${pascal}Repository } from '../infrastructure/repositories/${pascal}Repository';
-import { Create${pascal}UseCase } from '../application/${kebab}/use-cases/Create${pascal}UseCase';
-import { Update${pascal}UseCase } from '../application/${kebab}/use-cases/Update${pascal}UseCase';
-import { Delete${pascal}UseCase } from '../application/${kebab}/use-cases/Delete${pascal}UseCase';
-import { ${pascal}Controller } from '../presentation/http/controllers/${pascal}Controller';
+    `import { ${pascal}Repository } from '@/infrastructure/repositories/${pascal}Repository';
+import { Create${pascal}UseCase } from '@/application/${kebab}/use-cases/Create${pascal}UseCase';
+import { Update${pascal}UseCase } from '@/application/${kebab}/use-cases/Update${pascal}UseCase';
+import { Delete${pascal}UseCase } from '@/application/${kebab}/use-cases/Delete${pascal}UseCase';
+import { ${pascal}Controller } from '@/presentation/http/controllers/${pascal}Controller';
 
 /**
  * Wires up all dependencies for the ${pascal} module.
@@ -49,7 +49,7 @@ export const build${pascal}Container = () => {
   const ${camel}Controller = new ${pascal}Controller(
     create${pascal}UseCase,
     update${pascal}UseCase,
-    delete${pascal}UseCase
+    delete${pascal}UseCase,
   );
 
   return { ${camel}Controller };
