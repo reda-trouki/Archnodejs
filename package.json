@@ -1,0 +1,36 @@
+{
+  "name": "archgen",
+  "version": "2.0.0",
+  "description": "Enterprise-grade architecture generator for Node.js based on DDD, SOLID, Clean Architecture",
+  "main": "dist/cli.js",
+  "bin": {
+    "archgen": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/cli.ts",
+    "start": "node dist/cli.js"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
+    "fs-extra": "^11.2.0",
+    "glob": "^13.0.6",
+    "ora": "^5.4.1"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.11.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "keywords": [
+    "architecture",
+    "ddd",
+    "clean-architecture",
+    "hexagonal",
+    "solid",
+    "code-generator"
+  ],
+  "license": "MIT"
+}
